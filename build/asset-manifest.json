@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/ascii-renderer/static/css/main.be926734.css",
+    "main.js": "/ascii-renderer/static/js/main.1d9b076c.js",
+    "index.html": "/ascii-renderer/index.html",
+    "main.be926734.css.map": "/ascii-renderer/static/css/main.be926734.css.map",
+    "main.1d9b076c.js.map": "/ascii-renderer/static/js/main.1d9b076c.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.be926734.css",
+    "static/js/main.1d9b076c.js"
+  ]
+}
