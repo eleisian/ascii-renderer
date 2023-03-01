@@ -2,6 +2,7 @@
   "name": "ascii-renderer",
   "version": "1.0.0",
   "description": "Shows how to form self-contained components with their own state and user interaction.",
+  "homepage": "http://flxflai.github.io/ascii-renderer",
   "keywords": [],
   "main": "src/index.js",
   "dependencies": {
@@ -17,6 +18,8 @@
     "gh-pages": "^5.0.0"
   },
   "scripts": {
+    "predeploy": "yarn build",
+    "deploy": "gh-pages -d build",
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
