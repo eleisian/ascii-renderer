@@ -19,7 +19,7 @@ export default function App() {
         <Suspense fallback={null}>
           <Model />
           <OrbitControls target={[0, 0, 0]} />
-          <AsciiRenderer fgColor="black" bgColor="white" />
+          <AsciiRenderer fgColor="white" bgColor="black" />
         
         </Suspense>
       </Canvas>
