@@ -1,35 +1,22 @@
 import "./styles.css";
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useLoader } from "@react-three/fiber";
 import { Environment, OrbitControls } from "@react-three/drei";
 import { Suspense } from "react";
 import Model from "./Model";
 
 import { useEffect, useRef, useState, useMemo, useLayoutEffect } from 'react'
 import { useFrame, useThree } from '@react-three/fiber'
-import { useCursor } from '@react-three/drei'
+import { useCursor, Html, useProgress} from  '@react-three/drei'
 import { AsciiEffect } from 'three-stdlib'
+import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
 
 export default function App() {
-  return (
-    <div className="App">
-      <Canvas camera={{ position: [0, 4, 0], rotation: [-Math.PI / 2, 0, 0], pixelRatio: window.devicePixelRatio }}>
-      <color attach="background" args={['black']} />
-      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
-      <pointLight position={[-10, -10, -10]} />
-        <Suspense fallback={null}>
-          <Model />
-          <OrbitControls target={[0, 0, 0]} />
-          <AsciiRenderer fgColor="white" bgColor="black" />
-        
-        </Suspense>
-      </Canvas>
-    </div>
-  );
-  function AsciiRenderer({
+
+   function AsciiRenderer({
   renderIndex = 1,
   bgColor = 'black',
-  fgColor = 'white',
-  characters = ' .:-+*=%@#',
+  fgColor = 'white',  
+  characters = ' hackerman',
   invert = true,
   color = false,
   resolution = 0.2
@@ -77,4 +64,17 @@ export default function App() {
 
   // This component returns nothing, it is a purely logical
 }
+ 
+return (
+      <Canvas camera={{ position: [0, 3, 0], rotation: [-Math.PI / 2, 0, 0], pixelRatio: window.devicePixelRatio }}>
+      <color attach="background" args={['black']} />
+      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
+      <pointLight position={[-10, -10, -10]} />
+        <Suspense fallback={null}>
+          <Model />
+          <OrbitControls target={[0, 0, 0]} />
+          <AsciiRenderer fgColor="blue" bgColor="black" />
+          </Suspense> 
+      </Canvas>
+  );
 }
