@@ -73,7 +73,7 @@ return (
         <Suspense fallback={null}>
           <Model />
           <OrbitControls target={[0, 0, 0]} />
-          <AsciiRenderer fgColor="blue" bgColor="black" />
+          <AsciiRenderer fgColor="white" bgColor="black" />
           </Suspense> 
       </Canvas>
   );
