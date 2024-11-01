@@ -1,80 +1,95 @@
 import "./styles.css";
-import { Canvas, useLoader } from "@react-three/fiber";
-import { Environment, OrbitControls } from "@react-three/drei";
-import { Suspense } from "react";
-import Model from "./Model";
-
-import { useEffect, useRef, useState, useMemo, useLayoutEffect } from 'react'
-import { useFrame, useThree } from '@react-three/fiber'
-import { useCursor, Html, useProgress} from  '@react-three/drei'
-import { AsciiEffect } from 'three-stdlib'
-import { FBXLoader } from 'three/examples/jsm/loaders/FBXLoader'
+import { Canvas } from "@react-three/fiber";
+import { useState, useEffect } from "react";
+import { ThemeControls } from './components/ThemeControls';
+import { Scene } from './components/Scene';
 
 export default function App() {
+  const [modelUrl, setModelUrl] = useState(null)
+  const [modelType, setModelType] = useState(null)
+  const [theme, setTheme] = useState('dark')
+  const [isAscii, setIsAscii] = useState(true)
 
-   function AsciiRenderer({
-  renderIndex = 1,
-  bgColor = 'black',
-  fgColor = 'white',  
-  characters = ' hackerman',
-  invert = true,
-  color = false,
-  resolution = 0.2
-}) {
-  // Reactive state
-  const { size, gl, scene, camera } = useThree()
-  const aspectRatio = size.width / size.height
-
-  // Create effect
-  const effect = useMemo(() => {
-    const effect = new AsciiEffect(gl, characters, { invert, color, resolution })
-    effect.domElement.style.position = 'absolute'
-    effect.domElement.style.top = '0px'
-    effect.domElement.style.left = '0px'
-    effect.domElement.style.pointerEvents = 'none'
-    //effect.setSize(size.width, size.height / aspectRatio)
-    return effect
-  }, [characters, invert, color, aspectRatio, resolution])
-
-  // Styling
-  useLayoutEffect(() => {
-    effect.domElement.style.color = fgColor
-    effect.domElement.style.backgroundColor = bgColor
-  }, [fgColor, bgColor])
-
-  // Append on mount, remove on unmount
-  useEffect(() => {
-    gl.domElement.style.opacity = '0'
-    gl.domElement.parentNode.appendChild(effect.domElement)
-    return () => {
-      gl.domElement.style.opacity = '1'
-      gl.domElement.parentNode.removeChild(effect.domElement)
+  const themes = {
+    dark: {
+      background: 'black'
+    },
+    light: {
+      background: 'white'
     }
-  }, [effect])
+  }
 
-  // Set size
   useEffect(() => {
-    effect.setSize(size.width, size.height)
-  }, [effect, size])
+    console.log('Theme changed to:', theme)
+  }, [theme])
 
-  // Take over render-loop (that is what the index is for)
-  useFrame((state) => {
-    effect.render(scene, camera)
-  }, renderIndex)
+  const handleFileUpload = (event) => {
+    const file = event.target.files[0]
+    if (file) {
+      const url = URL.createObjectURL(file)
+      const type = file.name.split('.').pop().toLowerCase()
+      console.log('File uploaded:', { 
+        name: file.name, 
+        type: type, 
+        url: url 
+      })
+      setModelUrl(url)
+      setModelType(type)
+    }
+  }
 
-  // This component returns nothing, it is a purely logical
-}
- 
-return (
-      <Canvas camera={{ position: [0, 3, 0], rotation: [-Math.PI / 2, 0, 0], pixelRatio: window.devicePixelRatio }}>
-      <color attach="background" args={['black']} />
-      <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} />
-      <pointLight position={[-10, -10, -10]} />
-        <Suspense fallback={null}>
-          <Model />
-          <OrbitControls target={[0, 0, 0]} />
-          <AsciiRenderer fgColor="white" bgColor="black" />
-          </Suspense> 
+  const toggleAscii = () => {
+    setIsAscii(prev => !prev)
+  }
+
+  return (
+    <div style={{ width: '100%', height: '100vh', position: 'relative', overflow: 'hidden' }}>
+      {/* Toggle Button */}
+      <button 
+        onClick={toggleAscii}
+        style={{
+          position: 'absolute',
+          top: '10px',
+          left: '10px',
+          padding: '8px 12px',
+          background: '#fff',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          zIndex: 2  // Increased z-index to ensure it stays above the ASCII canvas
+        }}
+      >
+        {isAscii ? 'Switch to Normal' : 'Switch to ASCII'}
+      </button>
+
+      {/* Theme and File Controls */}
+      <ThemeControls theme={theme} setTheme={setTheme} handleFileUpload={handleFileUpload} />
+      
+      {/* Three.js Canvas */}
+      <Canvas 
+        camera={{ 
+          position: [0, 2, 5],
+          fov: 60,
+          near: 0.1,
+          far: 1000
+        }}
+        gl={{ 
+          preserveDrawingBuffer: true,
+          antialias: true
+        }}
+        style={{
+          width: '100%',
+          height: '100vh'
+        }}
+      >
+        <Scene 
+          modelUrl={modelUrl}
+          modelType={modelType}
+          theme={theme}
+          themes={themes}
+          isAscii={isAscii} // Pass the state to control ASCII rendering
+        />
       </Canvas>
+    </div>
   );
 }
